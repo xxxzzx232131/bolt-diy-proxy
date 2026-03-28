@@ -1,0 +1,10 @@
+node_modules
+**/node_modules
+.git
+.gitignore
+dist
+**/dist
+*.log
+.env
+.proxy-config.json
+artifacts/mockup-sandbox

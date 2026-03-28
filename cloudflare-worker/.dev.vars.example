@@ -1,0 +1,8 @@
+# Copy this file to .dev.vars for local development with `wrangler dev`
+# NEVER commit .dev.vars to git — it contains secrets
+
+PROXY_ENABLED=true
+PROXY_BASE_URL=https://api.openai.com
+PROXY_API_KEY=sk-your-key-here
+PROXY_PROVIDER=openai
+PROXY_TIMEOUT=30000

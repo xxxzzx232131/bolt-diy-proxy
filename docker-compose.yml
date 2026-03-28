@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bolt-diy-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      SESSION_SECRET: ${SESSION_SECRET:-change-me-in-production}
+      PROXY_ENABLED: ${PROXY_ENABLED:-false}
+      PROXY_BASE_URL: ${PROXY_BASE_URL:-}
+      PROXY_API_KEY: ${PROXY_API_KEY:-}
+      PROXY_PROVIDER: ${PROXY_PROVIDER:-openai}
+      PROXY_TIMEOUT: ${PROXY_TIMEOUT:-30000}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://bolt:boltpass@postgres:5432/boltdiy}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bolt-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: bolt-diy-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bolt
+      POSTGRES_PASSWORD: boltpass
+      POSTGRES_DB: boltdiy
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bolt-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bolt -d boltdiy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  bolt-network:
+    driver: bridge

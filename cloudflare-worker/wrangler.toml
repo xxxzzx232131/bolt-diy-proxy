@@ -1,0 +1,28 @@
+name = "bolt-diy-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+PROXY_PROVIDER = "openai"
+PROXY_TIMEOUT = "30000"
+PROXY_ENABLED = "false"
+
+# ─── Local dev overrides ──────────────────────────────────────────────────────
+# Copy .dev.vars.example to .dev.vars and fill in your secrets for local dev.
+# NEVER commit .dev.vars to git.
+#
+# .dev.vars should contain:
+#   PROXY_BASE_URL=https://api.openai.com
+#   PROXY_API_KEY=sk-...
+#   PROXY_ENABLED=true
+#
+# ─── Production secrets ───────────────────────────────────────────────────────
+# Set secrets with:
+#   wrangler secret put PROXY_BASE_URL
+#   wrangler secret put PROXY_API_KEY
+# ──────────────────────────────────────────────────────────────────────────────
+
+[[routes]]
+pattern = "/*"
+zone_name = ""
